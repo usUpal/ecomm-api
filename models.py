@@ -10,7 +10,7 @@ class User(Model):
     email = f.CharField(max_length=200, null=False, unique=True)
     password = f.CharField(max_length=100, null=False)
     is_verified = f.BooleanField(default=False)
-    join_data = f.DatetimeField(default=datetime.utcnow)
+    join_date = f.DatetimeField(default=datetime.utcnow)
 
 
 class Business(Model):
@@ -18,7 +18,7 @@ class Business(Model):
     business_name = f.CharField(max_length=200, null=False, unique=True)
     city = f.CharField(max_length=200, null=False, default="unspecified")
     region = f.CharField(max_length=200, null=False, default="unspecified")
-    business_description = f.TextField(null=False)
+    business_description = f.TextField(null=False, default="unspecified")
     logo = f.CharField(max_length=200, null=False, default="default.jpg")
     owner = f.ForeignKeyField("models.User", related_name="business")
 
@@ -39,7 +39,9 @@ class Product(Model):
 
 # user
 user_pydantic = pydantic_model_creator(User, name="User", exclude=("is_verified",))
-user_pydanticIn = pydantic_model_creator(User, name="UserIn", exclude_readonly=True)
+user_pydanticIn = pydantic_model_creator(
+    User, name="UserIn", exclude_readonly=True, exclude=("is_verified", "join_date")
+)
 user_pydanticOut = pydantic_model_creator(User, name="UserOut", exclude=("password",))
 # business
 business_pydantic = pydantic_model_creator(Business, name="Business")
